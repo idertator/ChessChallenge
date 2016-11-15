@@ -117,6 +117,8 @@ class KingPiece(AbstractPiece):
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KING_QUEEN_MOVES)
 
+    def __str__(self):
+        return 'K'
 
 class QueenPiece(AbstractPiece):
 
@@ -127,6 +129,9 @@ class QueenPiece(AbstractPiece):
     @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _KING_QUEEN_MOVES)
+
+    def __str__(self):
+        return 'Q'
 
 
 class BishopPiece(AbstractPiece):
@@ -139,6 +144,9 @@ class BishopPiece(AbstractPiece):
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _BISHOP_MOVES)
 
+    def __str__(self):
+        return 'B'
+
 
 class RookPiece(AbstractPiece):
 
@@ -149,6 +157,9 @@ class RookPiece(AbstractPiece):
     @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _ROOK_MOVES)
+
+    def __str__(self):
+        return 'R'
 
 
 class KnightPiece(AbstractPiece):
@@ -161,13 +172,16 @@ class KnightPiece(AbstractPiece):
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KNIGHT_MOVES)
 
+    def __str__(self):
+        return 'N'
+
 
 PIECES_LIST = [KingPiece, QueenPiece, BishopPiece, RookPiece, KnightPiece]
 PIECES_DICT = {piece.identifier(): piece for piece in PIECES_LIST}
 
 
 class Board:
-    __slots__ = ['state', '_next_row', '_next_col']
+    __slots__ = ['state', 'hash', '_next_row', '_next_col']
 
     @staticmethod
     def new(rows: int, cols: int):
@@ -182,6 +196,7 @@ class Board:
             next_position (optional): Next available position (row, column)
         """
         self.state = state
+        self.hash = ''
         self._next_row, self._next_col = next_position
 
     def add_piece(self, piece: AbstractPiece, row: int, col: int) -> bool:
@@ -205,6 +220,7 @@ class Board:
             self.state[row][col] = piece.identifier()
             for drow, dcol in piece.positions(self, row, col):
                 self.state[drow][dcol] = 1
+            self.hash = '%s%s%d%d' % (self.hash, str(piece), row, col)
             return True
 
     @property
@@ -244,5 +260,26 @@ class Board:
             return None, None
         return self._next_row, self._next_col
 
+    def available_positions(self):
+        """Generator of board available positions
 
+        Yields:
+            (int, int): Available row and column position in a tuple (row, column)
+        """
+        next_row, next_col = self.next_position()
+
+        if next_row is not None:
+            col = next_col
+            for row in range(next_row, self.rows):
+                while col < self.cols:
+                    if self.state[row][col] == 0:
+                        yield row, col
+                    col += 1
+                col = 0
+
+    def __hash__(self):
+        return self.hash.__hash__()
+
+    def __eq__(self, other):
+        return self.hash == other.hash
 

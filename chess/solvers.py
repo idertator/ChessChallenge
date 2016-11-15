@@ -1,4 +1,8 @@
 from abc import ABCMeta, abstractmethod
+from collections import deque
+from itertools import permutations
+
+from .structures import Board
 
 
 class Solver(metaclass=ABCMeta):
@@ -36,14 +40,38 @@ class Solver(metaclass=ABCMeta):
         pass
 
 
-class BruteForceSolver(Solver):
+class NaiveBruteForceSolver(Solver):
+    """
+    TODO: Fix this, is not working properly
+    """
 
     @classmethod
     def identifier(cls) -> str:
-        return 'brute'
+        return 'naive'
 
     def __init__(self, rows: int, cols: int, pieces: list):
-        super(BruteForceSolver, self).__init__(rows, cols, pieces)
+        super(NaiveBruteForceSolver, self).__init__(rows, cols, pieces)
 
     def solutions(self):
-        pass
+        available_pieces = []
+        for piece, count in self.pieces:
+            for _ in range(count):
+                available_pieces.append(piece())
+
+        for pieces in permutations(available_pieces):
+            for row in range(self.rows):
+                for col in range(self.cols):
+                    available_pieces = deque(pieces)
+                    board = Board.new(self.rows, self.cols)
+                    while available_pieces and board.next_position()[0] is not None:
+                        next_piece = available_pieces.popleft()
+                        for arow, acol in board.available_positions():
+                            if board.add_piece(next_piece, arow, acol):
+                                break
+                        else:
+                            available_pieces.appendleft(next_piece)
+                            del board
+                            break
+
+                    if not available_pieces:
+                        yield board
