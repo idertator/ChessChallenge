@@ -62,7 +62,7 @@ class AbstractPiece(metaclass=ABCMeta):
             col: Column number starting at 0
 
         Yields:
-            (int, int): Available row and column position in a tuple (row, col)
+            (int, int): Available row and column position in a tuple (row, column)
         """
         yield (None, None)
 
@@ -77,7 +77,7 @@ class AbstractPiece(metaclass=ABCMeta):
             moves: Candidates moves in a tuple of tuples with shape (row_delta, col_delta)
 
         Yields:
-            (int, int): Available row and column position in a tuple (row, col)
+            (int, int): Available row and column position in a tuple (row, column)
         """
         for drow, dcol in moves:
             if 0 <= row + drow < board.rows and 0 <= col + dcol < board.cols:
@@ -94,7 +94,7 @@ class AbstractPiece(metaclass=ABCMeta):
             moves: Candidates moves in a tuple of tuples with shape (row_delta, col_delta)
 
         Yields:
-            (int, int): Available row and column position in a tuple (row, col)
+            (int, int): Available row and column position in a tuple (row, column)
         """
         for drow, dcol in moves:
             if 0 <= row + drow < board.rows and 0 <= col + dcol < board.cols:
@@ -174,16 +174,12 @@ class Board:
         state = zeros((rows, cols), dtype=uint8)
         return Board(state)
 
-    @staticmethod
-    def copy(board):
-        pass
-
     def __init__(self, state: ndarray, next_position: tuple=(0, 0)):
-        """
+        """Board representation
 
         Args:
-            state:
-            next_position:
+            state: State of each slot in the board
+            next_position (optional): Next available position (row, column)
         """
         self.state = state
         self._next_row, self._next_col = next_position
@@ -212,17 +208,29 @@ class Board:
             return True
 
     @property
-    def rows(self):
+    def rows(self) -> int:
+        """Board row count"""
         return self.state.shape[0]
 
     @property
-    def cols(self):
+    def cols(self) -> int:
+        """Board column count"""
         return self.state.shape[1]
 
     def clone(self):
+        """Creates new identical Board object
+
+        Returns:
+            Board: Cloned object
+        """
         return Board(state=self.state.copy(), next_position=(self._next_row, self._next_col))
 
-    def next_position(self):
+    def next_position(self) -> tuple:
+        """Next available position in the board
+
+        Returns:
+            tuple(int, int): Position (row, column)
+        """
         while self.state[self._next_row][self._next_col] != 0:
             if self._next_col < self.cols - 1:
                 self._next_col += 1
