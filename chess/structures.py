@@ -44,19 +44,6 @@ class Board:
 
 
 class AbstractPiece(metaclass=ABCMeta):
-    __slots__ = ('board', 'row', 'col')
-
-    def __init__(self, board: Board, row: int, col: int):
-        """Abstract piece base class
-
-        Args:
-            board: Board object
-            row: Row number starting at 0
-            col: Column number starting at 0
-        """
-        self.board = board
-        self.row = row
-        self.col = col
 
     @classmethod
     @abstractmethod
@@ -81,23 +68,7 @@ class AbstractPiece(metaclass=ABCMeta):
         Yields:
             (int, int): Available row and column position in a tuple (row, col)
         """
-        pass
-
-    @classmethod
-    @abstractmethod
-    def check(cls, board: Board, row: int, col: int) -> bool:
-        """Checks if an slot is avaliable for the piece in a board
-
-        Args:
-            board: Board object
-            row: Row number starting at 0
-            col: Column number starting at 0
-
-        Returns:
-            If the slot is available or not
-
-        """
-        pass
+        yield (None, None)
 
     @classmethod
     def positions_step(cls, board: Board, row: int, col: int, moves: tuple):
@@ -144,53 +115,14 @@ class KingPiece(AbstractPiece):
 
     @classmethod
     def identifier(cls):
-        return 1
+        return 2
 
     @classmethod
     def positions(cls, board: Board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KING_QUEEN_MOVES)
 
-    @classmethod
-    def check(cls, board: Board, row: int, col: int):
-        pass
-
-    def __init__(self, board: Board, row: int, col: int):
-        """King piece class
-
-        Args:
-            board: Board object
-            row: Row number starting at 0
-            col: Column number starting at 0
-        """
-        super(KingPiece, self).__init__(board, row, col)
-
 
 class QueenPiece(AbstractPiece):
-
-    @classmethod
-    def identifier(cls):
-        return 2
-
-    @classmethod
-    def positions(cls, board: Board, row: int, col: int):
-        yield from AbstractPiece.positions_run(board, row, col, _KING_QUEEN_MOVES)
-
-    @classmethod
-    def check(cls, board: Board, row: int, col: int):
-        pass
-
-    def __init__(self, board: Board, row: int, col: int):
-        """Queen piece class
-
-        Args:
-            board: Board object
-            row: Row number starting at 0
-            col: Column number starting at 0
-        """
-        super(QueenPiece, self).__init__(board, row, col)
-
-
-class BishopPiece(AbstractPiece):
 
     @classmethod
     def identifier(cls):
@@ -198,24 +130,10 @@ class BishopPiece(AbstractPiece):
 
     @classmethod
     def positions(cls, board: Board, row: int, col: int):
-        yield from AbstractPiece.positions_run(board, row, col, _BISHOP_MOVES)
-
-    @classmethod
-    def check(cls, board: Board, row: int, col: int):
-        pass
-
-    def __init__(self, board: Board, row: int, col: int):
-        """Bishop piece class
-
-        Args:
-            board: Board object
-            row: Row number starting at 0
-            col: Column number starting at 0
-        """
-        super(BishopPiece, self).__init__(board, row, col)
+        yield from AbstractPiece.positions_run(board, row, col, _KING_QUEEN_MOVES)
 
 
-class RookPiece(AbstractPiece):
+class BishopPiece(AbstractPiece):
 
     @classmethod
     def identifier(cls):
@@ -223,24 +141,10 @@ class RookPiece(AbstractPiece):
 
     @classmethod
     def positions(cls, board: Board, row: int, col: int):
-        yield from AbstractPiece.positions_run(board, row, col, _ROOK_MOVES)
-
-    @classmethod
-    def check(cls, board: Board, row: int, col: int):
-        pass
-
-    def __init__(self, board: Board, row: int, col: int):
-        """Rook piece class
-
-        Args:
-            board: Board object
-            row: Row number starting at 0
-            col: Column number starting at 0
-        """
-        super(RookPiece, self).__init__(board, row, col)
+        yield from AbstractPiece.positions_run(board, row, col, _BISHOP_MOVES)
 
 
-class KnightPiece(AbstractPiece):
+class RookPiece(AbstractPiece):
 
     @classmethod
     def identifier(cls):
@@ -248,21 +152,18 @@ class KnightPiece(AbstractPiece):
 
     @classmethod
     def positions(cls, board: Board, row: int, col: int):
-        yield from AbstractPiece.positions_step(board, row, col, _KNIGHT_MOVES)
+        yield from AbstractPiece.positions_run(board, row, col, _ROOK_MOVES)
+
+
+class KnightPiece(AbstractPiece):
 
     @classmethod
-    def check(cls, board: Board, row: int, col: int):
-        pass
+    def identifier(cls):
+        return 6
 
-    def __init__(self, board: Board, row: int, col: int):
-        """Knight piece class
-
-        Args:
-            board: Board object
-            row: Row number starting at 0
-            col: Column number starting at 0
-        """
-        super(KnightPiece, self).__init__(board, row, col)
+    @classmethod
+    def positions(cls, board: Board, row: int, col: int):
+        yield from AbstractPiece.positions_step(board, row, col, _KNIGHT_MOVES)
 
 
 PIECES_LIST = [KingPiece, QueenPiece, BishopPiece, RookPiece, KnightPiece]
@@ -283,6 +184,29 @@ class Board:
 
     def __init__(self, state: ndarray):
         self.state = state
+
+    def add_piece(self, piece: AbstractPiece, row: int, col: int) -> bool:
+        """ Try to add a new piece to the board
+
+        Args:
+            piece: Piece class
+            row: Row number starting at 0
+            col: Column number starting at 0
+
+        Returns:
+            int: True if the piece was added successfully, False otherwise
+        """
+        if self.state[row][col] != 0:
+            return False
+
+        for drow, dcol in piece.positions(self, row, col):
+            if self.state[drow][dcol] > 1:
+                return False
+        else:
+            self.state[row][col] = piece.identifier()
+            for drow, dcol in piece.positions(self, row, col):
+                self.state[drow][dcol] = 1
+            return True
 
     @property
     def rows(self):
