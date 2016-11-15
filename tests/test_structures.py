@@ -71,7 +71,7 @@ class TestKnightStructures(StructuresTestCase):
 
 class TestBoard(StructuresTestCase):
 
-    def test_add_piece(self):
+    def test_add_piece_and_next_position(self):
         self.assertTrue(self.board.add_piece(KingPiece, 0, 3))
         state = array([
             [0, 0, 1, 2, 1],
@@ -81,6 +81,7 @@ class TestBoard(StructuresTestCase):
             [0, 0, 0, 0, 0],
         ], dtype=uint8)
         self.assertTrue((self.board.state == state).all())
+        self.assertEqual(self.board.next_position(), (0, 0))
 
         self.assertTrue(self.board.add_piece(QueenPiece, 4, 4))
         state = array([
@@ -91,6 +92,7 @@ class TestBoard(StructuresTestCase):
             [1, 1, 1, 1, 3],
         ], dtype=uint8)
         self.assertTrue((self.board.state == state).all())
+        self.assertEqual(self.board.next_position(), (0, 1))
 
         self.assertTrue(self.board.add_piece(BishopPiece, 1, 0))
         state = array([
@@ -101,6 +103,7 @@ class TestBoard(StructuresTestCase):
             [1, 1, 1, 1, 3],
         ], dtype=uint8)
         self.assertTrue((self.board.state == state).all())
+        self.assertEqual(self.board.next_position(), (2, 0))
 
         self.assertTrue(self.board.add_piece(RookPiece, 3, 1))
         state = array([
@@ -111,6 +114,7 @@ class TestBoard(StructuresTestCase):
             [1, 1, 1, 1, 3],
         ], dtype=uint8)
         self.assertTrue((self.board.state == state).all())
+        self.assertEqual(self.board.next_position(), (2, 0))
 
         self.assertTrue(self.board.add_piece(KnightPiece, 2, 0))
         state = array([
@@ -121,12 +125,18 @@ class TestBoard(StructuresTestCase):
             [1, 1, 1, 1, 3],
         ], dtype=uint8)
         self.assertTrue((self.board.state == state).all())
+        self.assertEqual(self.board.next_position(), (2, 3))
 
         self.assertFalse(self.board.add_piece(KnightPiece, 2, 3))
+        self.assertEqual(self.board.next_position(), (2, 3))
         self.assertFalse(self.board.add_piece(RookPiece, 2, 3))
+        self.assertEqual(self.board.next_position(), (2, 3))
         self.assertFalse(self.board.add_piece(QueenPiece, 2, 3))
+        self.assertEqual(self.board.next_position(), (2, 3))
         self.assertTrue(self.board.add_piece(BishopPiece, 2, 3))
+        self.assertEqual(self.board.next_position(), (None, None))
         self.assertFalse(self.board.add_piece(KingPiece, 2, 3))
+        self.assertEqual(self.board.next_position(), (None, None))
 
 
 if __name__ == '__main__':

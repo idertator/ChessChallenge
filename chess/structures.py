@@ -39,10 +39,6 @@ _KNIGHT_MOVES = (
 )
 
 
-class Board:
-    pass
-
-
 class AbstractPiece(metaclass=ABCMeta):
 
     @classmethod
@@ -51,13 +47,13 @@ class AbstractPiece(metaclass=ABCMeta):
         """Piece unique identifier
 
         Returns:
-            int: Unique identifier
+            Unique identifier
         """
         pass
 
     @classmethod
     @abstractmethod
-    def positions(cls, board: Board, row: int, col: int):
+    def positions(cls, board, row: int, col: int):
         """Generator of available attacking slots
 
         Args:
@@ -71,7 +67,7 @@ class AbstractPiece(metaclass=ABCMeta):
         yield (None, None)
 
     @classmethod
-    def positions_step(cls, board: Board, row: int, col: int, moves: tuple):
+    def positions_step(cls, board, row: int, col: int, moves: tuple):
         """Generator of available attacking slots using only the specified moves
 
         Args:
@@ -88,7 +84,7 @@ class AbstractPiece(metaclass=ABCMeta):
                 yield row + drow, col + dcol
 
     @classmethod
-    def positions_run(cls, board: Board, row: int, col: int, moves: tuple):
+    def positions_run(cls, board, row: int, col: int, moves: tuple):
         """Generator of available attacking slots by running the specified moves
 
         Args:
@@ -118,7 +114,7 @@ class KingPiece(AbstractPiece):
         return 2
 
     @classmethod
-    def positions(cls, board: Board, row: int, col: int):
+    def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KING_QUEEN_MOVES)
 
 
@@ -129,7 +125,7 @@ class QueenPiece(AbstractPiece):
         return 3
 
     @classmethod
-    def positions(cls, board: Board, row: int, col: int):
+    def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _KING_QUEEN_MOVES)
 
 
@@ -140,7 +136,7 @@ class BishopPiece(AbstractPiece):
         return 4
 
     @classmethod
-    def positions(cls, board: Board, row: int, col: int):
+    def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _BISHOP_MOVES)
 
 
@@ -151,7 +147,7 @@ class RookPiece(AbstractPiece):
         return 5
 
     @classmethod
-    def positions(cls, board: Board, row: int, col: int):
+    def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _ROOK_MOVES)
 
 
@@ -162,7 +158,7 @@ class KnightPiece(AbstractPiece):
         return 6
 
     @classmethod
-    def positions(cls, board: Board, row: int, col: int):
+    def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KNIGHT_MOVES)
 
 
@@ -171,7 +167,7 @@ PIECES_DICT = {piece.identifier(): piece for piece in PIECES_LIST}
 
 
 class Board:
-    __slots__ = 'board', 'state'
+    __slots__ = ['state', '_next_row', '_next_col']
 
     @staticmethod
     def new(rows: int, cols: int):
@@ -182,11 +178,18 @@ class Board:
     def copy(board):
         pass
 
-    def __init__(self, state: ndarray):
+    def __init__(self, state: ndarray, next_position: tuple=(0, 0)):
+        """
+
+        Args:
+            state:
+            next_position:
+        """
         self.state = state
+        self._next_row, self._next_col = next_position
 
     def add_piece(self, piece: AbstractPiece, row: int, col: int) -> bool:
-        """ Try to add a new piece to the board
+        """Try to add a new piece to the board
 
         Args:
             piece: Piece class
@@ -215,4 +218,23 @@ class Board:
     @property
     def cols(self):
         return self.state.shape[1]
+
+    def clone(self):
+        return Board(state=self.state.copy(), next_position=(self._next_row, self._next_col))
+
+    def next_position(self):
+        while self.state[self._next_row][self._next_col] != 0:
+            if self._next_col < self.cols - 1:
+                self._next_col += 1
+            elif self._next_row < self.rows - 1:
+                self._next_row += 1
+                self._next_col = 0
+            else:
+                return None, None
+
+        if self.state[self._next_row][self._next_col] != 0:
+            return None, None
+        return self._next_row, self._next_col
+
+
 
