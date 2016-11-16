@@ -1,4 +1,4 @@
-from chess.solvers import NaiveBruteForceSolver
+from chess.solvers import RecursiveBruteForceSolver
 from chess.structures import KingPiece, QueenPiece, BishopPiece, RookPiece, KnightPiece
 
 
@@ -6,25 +6,36 @@ if __name__ == '__main__':
     # ROWS = 3
     # COLS = 3
     # PIECES = (
-    #     (KingPiece, 2),
-    #     (RookPiece, 1),
+    #     (KingPiece, 1),
     # )
 
-    ROWS = 4
-    COLS = 4
+    ROWS = 3
+    COLS = 3
     PIECES = (
-        (RookPiece, 2),
-        (KnightPiece, 4),
+        (KingPiece, 2),
+        (RookPiece, 1),
     )
 
+    # ROWS = 4
+    # COLS = 4
+    # PIECES = (
+    #     (RookPiece, 2),
+    #     (KnightPiece, 4),
+    # )
 
-    solver = NaiveBruteForceSolver(rows=ROWS, cols=COLS, pieces=PIECES)
+    # ROWS = 7
+    # COLS = 7
+    # PIECES = (
+    #     (KingPiece, 2),
+    #     (QueenPiece, 2),
+    #     (BishopPiece, 2),
+    #     (KnightPiece, 1),
+    # )
 
-    solutions = {solution for solution in solver.solutions()}
+    solver = RecursiveBruteForceSolver(rows=ROWS, cols=COLS, pieces=PIECES)
 
-    print(len(solutions))
-    for solution in solutions:
-
-        print(solution.hash)
+    for solution in solver.solutions():
         print(solution.state)
         print()
+
+    print('Time Used: %.2f seconds' % solver.time)

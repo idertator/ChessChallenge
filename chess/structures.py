@@ -120,6 +120,7 @@ class KingPiece(AbstractPiece):
     def __str__(self):
         return 'K'
 
+
 class QueenPiece(AbstractPiece):
 
     @classmethod
@@ -181,14 +182,14 @@ PIECES_DICT = {piece.identifier(): piece for piece in PIECES_LIST}
 
 
 class Board:
-    __slots__ = ['state', 'hash', '_next_row', '_next_col']
+    __slots__ = ['state', '_next_row', '_next_col', 'pieces']
 
     @staticmethod
     def new(rows: int, cols: int):
         state = zeros((rows, cols), dtype=uint8)
         return Board(state)
 
-    def __init__(self, state: ndarray, next_position: tuple=(0, 0)):
+    def __init__(self, state: ndarray, next_position: tuple=(0, 0), pieces=set()):
         """Board representation
 
         Args:
@@ -196,8 +197,8 @@ class Board:
             next_position (optional): Next available position (row, column)
         """
         self.state = state
-        self.hash = ''
         self._next_row, self._next_col = next_position
+        self.pieces = pieces
 
     def add_piece(self, piece: AbstractPiece, row: int, col: int) -> bool:
         """Try to add a new piece to the board
@@ -220,7 +221,7 @@ class Board:
             self.state[row][col] = piece.identifier()
             for drow, dcol in piece.positions(self, row, col):
                 self.state[drow][dcol] = 1
-            self.hash = '%s%s%d%d' % (self.hash, str(piece), row, col)
+            self.pieces.add((piece.identifier(), row, col))
             return True
 
     @property
@@ -233,13 +234,13 @@ class Board:
         """Board column count"""
         return self.state.shape[1]
 
-    def clone(self):
+    def copy(self):
         """Creates new identical Board object
 
         Returns:
             Board: Cloned object
         """
-        return Board(state=self.state.copy(), next_position=(self._next_row, self._next_col))
+        return Board(state=self.state.copy(), next_position=(self._next_row, self._next_col), pieces=self.pieces.copy())
 
     def next_position(self) -> tuple:
         """Next available position in the board
@@ -278,8 +279,5 @@ class Board:
                 col = 0
 
     def __hash__(self):
-        return self.hash.__hash__()
-
-    def __eq__(self, other):
-        return self.hash == other.hash
+        return hash(self.pieces)
 
