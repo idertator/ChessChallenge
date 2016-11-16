@@ -75,11 +75,9 @@ class RecursiveBruteForceSolver(Solver):
                 available_pieces.append(piece())
 
         RecursiveBruteForceSolver.completed = set()
-        recursive_function = RecursiveBruteForceSolver._solutions_recursive
 
         board = Board.new(self.rows, self.cols)
-        for solution in recursive_function(board, available_pieces):
-            yield solution
+        yield from RecursiveBruteForceSolver._solutions_recursive(board, available_pieces)
 
     @staticmethod
     def _solutions_recursive(board: Board, pieces: list):
@@ -88,8 +86,7 @@ class RecursiveBruteForceSolver(Solver):
             if not pieces:
                 RecursiveBruteForceSolver.completed.add(frozenset(board.pieces))
                 yield board
-
-            if board.next_position()[0] is not None:
+            elif board.next_position()[0] is not None:
                 for index, piece in enumerate(pieces):
                     next_board = board.copy()
                     for next_row, next_col in board.available_positions():

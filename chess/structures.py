@@ -279,5 +279,5 @@ class Board:
                 col = 0
 
     def __hash__(self):
-        return hash(self.pieces)
+        return hash(frozenset(self.pieces))
 
