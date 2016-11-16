@@ -1,6 +1,4 @@
 from abc import ABCMeta, abstractmethod
-from collections import deque
-from itertools import permutations
 from time import time
 
 from .structures import Board
@@ -51,43 +49,6 @@ class Solver(metaclass=ABCMeta):
         return self._time
 
 
-class NaiveBruteForceSolver(Solver):
-    """
-    TODO: Fix this, is not working properly
-    """
-
-    @classmethod
-    def identifier(cls) -> str:
-        return 'naive'
-
-    def __init__(self, rows: int, cols: int, pieces: list):
-        super(NaiveBruteForceSolver, self).__init__(rows, cols, pieces)
-
-    def _solutions(self):
-        available_pieces = []
-        for piece, count in self.pieces:
-            for _ in range(count):
-                available_pieces.append(piece())
-
-        for pieces in permutations(available_pieces):
-            for row in range(self.rows):
-                for col in range(self.cols):
-                    available_pieces = deque(pieces)
-                    board = Board.new(self.rows, self.cols)
-                    while available_pieces and board.next_position()[0] is not None:
-                        next_piece = available_pieces.popleft()
-                        for arow, acol in board.available_positions():
-                            if board.add_piece(next_piece, arow, acol):
-                                break
-                        else:
-                            available_pieces.appendleft(next_piece)
-                            del board
-                            break
-
-                    if not available_pieces:
-                        yield board
-
-
 class RecursiveBruteForceSolver(Solver):
 
     completed = set()
@@ -107,7 +68,6 @@ class RecursiveBruteForceSolver(Solver):
 
         board = Board.new(self.rows, self.cols)
         for solution in recursive_function(board, available_pieces, 0, 0):
-            print(solution.pieces)
             yield solution
 
     @staticmethod
@@ -127,9 +87,6 @@ class RecursiveBruteForceSolver(Solver):
                             del next_pieces[index]
                             yield from RecursiveBruteForceSolver._solutions_recursive(next_board, next_pieces, next_row, next_col)
                             next_board = board.copy()
-
-            # remove = {completed for completed in RecursiveBruteForceSolver.completed if completed.intersection(board.pieces) == board.pieces}
-            # RecursiveBruteForceSolver.completed -= remove
 
             RecursiveBruteForceSolver.completed.add(frozenset(board.pieces))
 
