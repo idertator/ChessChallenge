@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from numpy import ndarray, zeros, uint8
+from numpy import ndarray, zeros, uint8, uint16
 
 
 _KING_QUEEN_MOVES = (
@@ -208,6 +208,15 @@ class Board:
             row: Row number starting at 0
             col: Column number starting at 0
 
+        Adding the piece to the board implies to set the piece in the *status* matrix
+        in the specified position using the piece identifier. Also adds the hash
+        of the piece to the *piece* set.
+
+        The *piece* hash is a 16bit integer number:
+            - 6 bits for row number
+            - 6 bits for column number
+            - 4 bits for piece representation
+
         Returns:
             int: True if the piece was added successfully, False otherwise
         """
@@ -221,7 +230,9 @@ class Board:
             self.state[row][col] = piece.identifier()
             for drow, dcol in piece.positions(self, row, col):
                 self.state[drow][dcol] = 1
-            self.pieces.add((piece.identifier(), row, col))
+
+            piece_hash = (piece.identifier() - 2) | (col << 4) | (row << 10)
+            self.pieces.add(uint16(piece_hash))
             return True
 
     @property
