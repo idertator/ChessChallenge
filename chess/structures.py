@@ -1,3 +1,14 @@
+"""
+chess.structures
+================
+
+This module contains classes which responsibility is to provide the necessary data structures
+to solve the chess challenge.
+
+Attributes:
+    PIECES_LIST (tuple): List of available pieces
+"""
+
 from abc import ABCMeta, abstractmethod
 from numpy import ndarray, zeros, uint8, uint16
 
@@ -208,7 +219,7 @@ class KnightPiece(AbstractPiece):
         return 'N'
 
 
-PIECES_LIST = [KingPiece, QueenPiece, BishopPiece, RookPiece, KnightPiece]
+PIECES_LIST = (KingPiece, QueenPiece, BishopPiece, RookPiece, KnightPiece)
 
 
 class Board:

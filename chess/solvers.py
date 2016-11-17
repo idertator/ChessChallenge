@@ -1,3 +1,14 @@
+"""
+chess.solvers
+=============
+
+This module contains classes which responsibility is to solve the chess challenge.
+
+Attributes:
+    SOLVERS_LIST (tuple): List of available solvers
+    SOLVERS_DICT (dict): Dictionary which maps identifiers to solvers
+"""
+
 from abc import ABCMeta, abstractmethod
 from time import time
 
