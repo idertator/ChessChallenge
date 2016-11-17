@@ -189,7 +189,7 @@ class Board:
         state = zeros((rows, cols), dtype=uint8)
         return Board(state)
 
-    def __init__(self, state: ndarray, next_position: tuple=(0, 0), pieces=set()):
+    def __init__(self, state: ndarray, next_position: tuple=(0, 0), pieces=None):
         """Board representation
 
         Args:
@@ -198,7 +198,7 @@ class Board:
         """
         self.state = state
         self._next_row, self._next_col = next_position
-        self.pieces = pieces
+        self.pieces = pieces if pieces is not None else set()
 
     def add_piece(self, piece: AbstractPiece, row: int, col: int) -> bool:
         """Try to add a new piece to the board
@@ -280,4 +280,7 @@ class Board:
 
     def __hash__(self):
         return hash(frozenset(self.pieces))
+
+    def __eq__(self, other):
+        return (self.state == other.state).all()
 
