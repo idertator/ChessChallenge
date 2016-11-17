@@ -4,7 +4,7 @@ import argparse
 
 from chess.solvers import SOLVERS_LIST, SOLVERS_DICT
 from chess.structures import PIECES_LIST
-from chess.utils import piece_character_parameter, piece_pluralized, first_uppercase
+from chess.utils import piece_character_parameter, piece_pluralized, capitalize
 
 
 if __name__ == '__main__':
@@ -42,7 +42,7 @@ if __name__ == '__main__':
             dest=piece.name(),
             type=int, default=0,
             required=False,
-            help='%s pieces count' % first_uppercase(piece.name())
+            help='%s pieces count' % capitalize(piece.name())
         )
 
     args = parser.parse_args()
