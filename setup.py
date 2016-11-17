@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='ChessChallenge',
-    version='0.0.1',
+    version='0.1',
     packages=['chess'],
     url='https://github.com/idertator/ChessChallenge',
     license='MIT',

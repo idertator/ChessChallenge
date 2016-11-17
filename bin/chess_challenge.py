@@ -17,7 +17,7 @@ if __name__ == '__main__':
         '-co', '--count-only',
         dest='count_only',
         action='store_true',
-        help='Only prints the final solution count'
+        help='only prints the final solution count'
     )
 
     parser.add_argument(
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         dest='solver',
         type=str, default=SOLVERS_LIST[0].identifier(),
         required=False,
-        help='Which solver use to find solutions'
+        help='which solver use to find solutions'
     )
 
     parser.add_argument(
@@ -33,7 +33,13 @@ if __name__ == '__main__':
         dest='size',
         type=int, nargs=2,
         required=True,
-        help='Board size (rows, colums)'
+        help='board size (rows, colums)'
+    )
+
+    parser.add_argument(
+        '-V', '--version',
+        action='version',
+        version='chessChallenge v0.1'
     )
 
     for piece in PIECES_LIST:
@@ -42,7 +48,7 @@ if __name__ == '__main__':
             dest=piece.name(),
             type=int, default=0,
             required=False,
-            help='%s pieces count' % capitalize(piece.name())
+            help='%s pieces count' % piece.name().lower()
         )
 
     args = parser.parse_args()
