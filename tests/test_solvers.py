@@ -6,6 +6,15 @@ from chess.solvers import RecursiveBruteForceSolver
 
 class TestRecursiveBruteForce(unittest.TestCase):
 
+    def test_3_3_board_1_piece(self):
+        pieces = [
+            (KingPiece, 1),
+        ]
+        solver = RecursiveBruteForceSolver(rows=3, cols=3, pieces=pieces)
+        solutions = [solution.pieces for solution in solver.solutions()]
+
+        self.assertEqual(len(solutions), 9)
+
     def test_3_3_board(self):
 
         pieces = [
@@ -13,6 +22,7 @@ class TestRecursiveBruteForce(unittest.TestCase):
             (RookPiece, 1),
         ]
         solver = RecursiveBruteForceSolver(rows=3, cols=3, pieces=pieces)
+
         set1 = {frozenset(solution.pieces) for solution in solver.solutions()}
 
         self.assertEqual(len(set1), 4)
@@ -40,3 +50,25 @@ class TestRecursiveBruteForce(unittest.TestCase):
         solution4.add_piece(KingPiece, 2, 0)
         solution4.add_piece(KingPiece, 2, 2)
         self.assertIn(solution4.pieces, set1)
+
+    def test_4_4_board(self):
+        pieces = [
+            (RookPiece, 2),
+            (KnightPiece, 4),
+        ]
+        solver = RecursiveBruteForceSolver(rows=4, cols=4, pieces=pieces)
+        solutions = [solution.pieces for solution in solver.solutions()]
+
+        self.assertEqual(len(solutions), 8)
+
+    def test_5_5_board(self):
+        pieces = [
+            (KingPiece, 2),
+            (QueenPiece, 1),
+            (BishopPiece, 1),
+            (KnightPiece, 1),
+        ]
+        solver = RecursiveBruteForceSolver(rows=5, cols=5, pieces=pieces)
+        solutions = [solution.pieces for solution in solver.solutions()]
+
+        self.assertEqual(len(solutions), 4696)
