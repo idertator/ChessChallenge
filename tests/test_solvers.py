@@ -8,13 +8,11 @@ class TestRecursiveBruteForce(unittest.TestCase):
 
     def test_3_3_board(self):
 
-        ROWS = 3
-        COLS = 3
-        PIECES = [
+        pieces = [
             (KingPiece, 2),
             (RookPiece, 1),
         ]
-        solver = RecursiveBruteForceSolver(rows=ROWS, cols=COLS, pieces=PIECES)
+        solver = RecursiveBruteForceSolver(rows=3, cols=3, pieces=pieces)
         set1 = {frozenset(solution.pieces) for solution in solver.solutions()}
 
         solution1 = Board.new(3, 3)
