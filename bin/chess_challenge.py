@@ -11,28 +11,28 @@ if __name__ == '__main__':
     #     (KingPiece, 1),
     # )
 
-    ROWS = 3
-    COLS = 3
-    PIECES = [
-        (KingPiece, 2),
-        (RookPiece, 1),
-    ]
+    # ROWS = 3
+    # COLS = 3
+    # PIECES = [
+    #     (KingPiece, 2),
+    #     (RookPiece, 1),
+    # ]
 
     # ROWS = 4
     # COLS = 4
-    # PIECES = (
+    # PIECES = [
     #     (RookPiece, 2),
     #     (KnightPiece, 4),
-    # )
+    # ]
 
     ROWS = 5
     COLS = 5
-    PIECES = (
+    PIECES = [
         (KingPiece, 2),
         (QueenPiece, 1),
         (BishopPiece, 1),
         (KnightPiece, 1),
-    )
+    ]
 
     # ROWS = 7
     # COLS = 7
@@ -48,5 +48,7 @@ if __name__ == '__main__':
     solution_count = 0
     for solution in solver.solutions():
         solution_count += 1
+        #print(solution.pieces)
 
+    print(len(solver.solutions_set))
     print('%s solutions founded in %.2f seconds' % (solution_count, solver.time))

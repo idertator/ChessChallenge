@@ -15,6 +15,8 @@ class TestRecursiveBruteForce(unittest.TestCase):
         solver = RecursiveBruteForceSolver(rows=3, cols=3, pieces=pieces)
         set1 = {frozenset(solution.pieces) for solution in solver.solutions()}
 
+        self.assertEqual(len(set1), 4)
+
         solution1 = Board.new(3, 3)
         solution1.add_piece(KingPiece, 0, 0)
         solution1.add_piece(KingPiece, 0, 2)

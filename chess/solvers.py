@@ -62,7 +62,8 @@ class RecursiveBruteForceSolver(Solver):
     the same combination of pieces and locations.
     """
 
-    completed = set()
+    completed_set = None
+    solutions_set = None
 
     @classmethod
     def identifier(cls):
@@ -74,28 +75,28 @@ class RecursiveBruteForceSolver(Solver):
             for _ in range(count):
                 available_pieces.append(piece())
 
-        RecursiveBruteForceSolver.completed = set()
+        RecursiveBruteForceSolver.completed_set = set()
+        RecursiveBruteForceSolver.solutions_set = set()
 
         board = Board.new(self.rows, self.cols)
         yield from RecursiveBruteForceSolver._solutions_recursive(board, available_pieces)
 
     @staticmethod
     def _solutions_recursive(board: Board, pieces: list):
-        if set(board.pieces) not in RecursiveBruteForceSolver.completed:
-
-            if not pieces:
-                RecursiveBruteForceSolver.completed.add(frozenset(board.pieces))
-                yield board
-            elif board.next_position()[0] is not None:
-                for index, piece in enumerate(pieces):
-                    next_board = board.copy()
-                    for next_row, next_col in board.available_positions():
-                        if next_board.add_piece(piece, next_row, next_col):
+        if board.next_position()[0] is not None:
+            next_board = board.copy()
+            for index, piece in enumerate(pieces):
+                for next_row, next_col in board.available_positions():
+                    if next_board.add_piece(piece, next_row, next_col):
+                        if len(pieces) == 1 and next_board.pieces not in RecursiveBruteForceSolver.solutions_set:
+                            RecursiveBruteForceSolver.solutions_set.add(frozenset(next_board.pieces))
+                            yield next_board
+                        elif next_board.pieces not in RecursiveBruteForceSolver.completed_set:
                             next_pieces = pieces.copy()
                             del next_pieces[index]
                             yield from RecursiveBruteForceSolver._solutions_recursive(next_board, next_pieces)
-                            next_board = board.copy()
+                        next_board = board.copy()
 
-            RecursiveBruteForceSolver.completed.add(frozenset(board.pieces))
+        RecursiveBruteForceSolver.completed_set.add(frozenset(board.pieces))
 
 
