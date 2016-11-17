@@ -24,6 +24,13 @@ Pieces     :
 
 
 class Solver(metaclass=ABCMeta):
+    """Abstract base class for solvers
+
+    Args:
+        rows: Row count
+        cols: Column count
+        pieces: List of tuples of two elements (Piece, Count)
+    """
 
     @classmethod
     @abstractmethod
@@ -45,17 +52,18 @@ class Solver(metaclass=ABCMeta):
         pass
 
     def __init__(self, rows: int, cols: int, pieces: list):
-        """Abstract base class for solvers
-
-        Args:
-            rows: Row count
-            cols: Column count
-            pieces: List of tuples of two elements (Piece, Count)
-        """
         self.rows = rows
         self.cols = cols
         self.pieces = pieces
         self._time = 0
+
+    def __str__(self):
+        return _SOLVER_REPR_TEMPLATE % (
+            self.identifier(),
+            self.rows, self.cols,
+            '\n'.join(['\t* %s: %d' % (capitalize(piece_pluralized(piece.name())), count)
+                       for piece, count in self.pieces if count > 0])
+        )
 
     def solutions(self):
         """Generator of available solutions
@@ -72,21 +80,15 @@ class Solver(metaclass=ABCMeta):
         """Time used for the computation in seconds"""
         return self._time
 
-    def __str__(self):
-        return _SOLVER_REPR_TEMPLATE % (
-            self.identifier(),
-            self.rows, self.cols,
-            '\n'.join(['\t* %s: %d' % (capitalize(piece_pluralized(piece.name())), count)
-                       for piece, count in self.pieces if count > 0])
-        )
-
 
 class RecursiveBruteForceSolver(Solver):
     """ Recursive brute force solver
 
     Uses a recursive backtracking technique to test all possible solutions.
-    The solver uses the set *completed* to avoid repeating calculations from
-    the same combination of pieces and locations.
+    The solver uses the sets ``completed_set`` and ``solutions_set`` to avoid
+    repeating calculations from the same combination of pieces and locations.
+
+
     """
 
     completed_set = None
