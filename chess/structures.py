@@ -53,6 +53,17 @@ class AbstractPiece(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
+    def name(cls) -> str:
+        """Piece name
+
+        The character specified by uppercase will be used as argument shortcut parameter in the CLI
+        Returns:
+            Name
+        """
+        pass
+
+    @classmethod
+    @abstractmethod
     def positions(cls, board, row: int, col: int):
         """Generator of available attacking slots
 
@@ -114,6 +125,10 @@ class KingPiece(AbstractPiece):
         return 2
 
     @classmethod
+    def name(cls):
+        return 'King'
+
+    @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KING_QUEEN_MOVES)
 
@@ -126,6 +141,10 @@ class QueenPiece(AbstractPiece):
     @classmethod
     def identifier(cls):
         return 3
+
+    @classmethod
+    def name(cls):
+        return 'Queen'
 
     @classmethod
     def positions(cls, board, row: int, col: int):
@@ -142,6 +161,10 @@ class BishopPiece(AbstractPiece):
         return 4
 
     @classmethod
+    def name(cls):
+        return 'Bishop'
+
+    @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _BISHOP_MOVES)
 
@@ -154,6 +177,10 @@ class RookPiece(AbstractPiece):
     @classmethod
     def identifier(cls):
         return 5
+
+    @classmethod
+    def name(cls):
+        return 'Rook'
 
     @classmethod
     def positions(cls, board, row: int, col: int):
@@ -170,6 +197,10 @@ class KnightPiece(AbstractPiece):
         return 6
 
     @classmethod
+    def name(cls):
+        return 'kNight'
+
+    @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KNIGHT_MOVES)
 
@@ -178,7 +209,6 @@ class KnightPiece(AbstractPiece):
 
 
 PIECES_LIST = [KingPiece, QueenPiece, BishopPiece, RookPiece, KnightPiece]
-PIECES_DICT = {piece.identifier(): piece for piece in PIECES_LIST}
 
 
 class Board:

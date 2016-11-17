@@ -2,6 +2,14 @@ from abc import ABCMeta, abstractmethod
 from time import time
 
 from .structures import Board
+from .utils import piece_pluralized, first_uppercase
+
+
+_SOLVER_REPR_TEMPLATE = '''Solver     : %s
+Board size : (%s, %s)
+Pieces     :
+%s
+'''
 
 
 class Solver(metaclass=ABCMeta):
@@ -53,6 +61,14 @@ class Solver(metaclass=ABCMeta):
         """Time used for the computation in seconds"""
         return self._time
 
+    def __str__(self):
+        return _SOLVER_REPR_TEMPLATE % (
+            self.identifier(),
+            self.rows, self.cols,
+            '\n'.join(['\t* %s: %d' % (first_uppercase(piece_pluralized(piece.name())), count)
+                       for piece, count in self.pieces if count > 0])
+        )
+
 
 class RecursiveBruteForceSolver(Solver):
     """ Recursive brute force solver
@@ -98,5 +114,14 @@ class RecursiveBruteForceSolver(Solver):
                         next_board = board.copy()
 
         RecursiveBruteForceSolver.completed_set.add(frozenset(board.pieces))
+
+
+SOLVERS_LIST = (
+    RecursiveBruteForceSolver,
+)
+
+SOLVERS_DICT = {solver.identifier(): solver for solver in SOLVERS_LIST}
+
+
 
 
