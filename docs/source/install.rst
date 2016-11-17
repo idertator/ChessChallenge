@@ -19,8 +19,8 @@ Bulding ChessChallenge requires the following software installed:
 We encourage to users installing the `Anaconda Distribution <https://www.continuum.io/downloads>`_
 from Continuum Analytics to use this package.
 
-Instalation
-^^^^^^^^^^^
+Installation
+^^^^^^^^^^^^
 
 To install ChessChallenge run de following command in the root directory of the package::
 
