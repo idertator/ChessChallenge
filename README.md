@@ -27,7 +27,7 @@ from Continuum Analytics to use this package.
 
 #### Installation
 
-To install ChessChallenge run de following command in the root directory of the package::
+To install ChessChallenge run de following command in the root directory of the package:
 
     python setup.py install
 
@@ -35,18 +35,18 @@ To install ChessChallenge run de following command in the root directory of the 
 
 ### Examples
 
-For instance, to solve a 3x3 board with 2 rooks and 4 knights using the default solver you use::
+For instance, to solve a 3x3 board with 2 rooks and 4 knights using the default solver you use:
 
     chess_challenge.py -bs 3 3 -R 2 -N 4
 
-To specify a solver (*recursive* in this example) you add `-s` option::
+To specify a solver (*recursive* in this example) you add `-s` option:
 
     chess_challenge.py -bs 3 3 -R 2 -N 4 -s recursive
 
-To print only the solutions count use the `-co` option::
+To print only the solutions count use the `-co` option:
 
     chess_challenge.py -bs 3 3 -R 2 -N 4 -s recursive -co
 
-To see full command help type::
+To see full command help type:
 
     chess_challenge.py -h
