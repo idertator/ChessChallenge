@@ -80,6 +80,15 @@ class Solver(metaclass=ABCMeta):
         """Time used for the computation in seconds"""
         return self._time
 
+def in_some(query_set, full_set):
+    if query_set in full_set:
+        return True
+    for set_sample in full_set:
+        if query_set in set_sample:
+            return True
+    return False
+
+
 
 class RecursiveBruteForceSolver(Solver):
     """ Recursive brute force solver
@@ -115,18 +124,21 @@ class RecursiveBruteForceSolver(Solver):
         if board.next_position()[0] is not None:
             next_board = board.copy()
             for index, piece in enumerate(pieces):
+                if index > 0 and piece.__class__ == pieces[index - 1].__class__:
+                    continue
                 for next_row, next_col in board.available_positions():
                     if next_board.add_piece(piece, next_row, next_col):
-                        if len(pieces) == 1 and next_board.pieces not in RecursiveBruteForceSolver.solutions_set:
-                            RecursiveBruteForceSolver.solutions_set.add(frozenset(next_board.pieces))
+                        if len(pieces) == 1 and hash(frozenset(next_board.pieces)) not in RecursiveBruteForceSolver.solutions_set:
+                            RecursiveBruteForceSolver.solutions_set.add(hash(frozenset(next_board.pieces)))
                             yield next_board
-                        elif next_board.pieces not in RecursiveBruteForceSolver.completed_set:
+                        elif hash(frozenset(next_board.pieces)) not in RecursiveBruteForceSolver.completed_set:
                             next_pieces = pieces.copy()
                             del next_pieces[index]
                             yield from RecursiveBruteForceSolver._solutions_recursive(next_board, next_pieces)
                         next_board = board.copy()
 
-        RecursiveBruteForceSolver.completed_set.add(frozenset(board.pieces))
+        if 1 < len(board.pieces) <= 5:
+            RecursiveBruteForceSolver.completed_set.add(hash(frozenset(board.pieces)))
 
 
 SOLVERS_LIST = (
