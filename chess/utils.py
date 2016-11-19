@@ -6,7 +6,7 @@ This module contains utility functions used by the rest of the project.
 """
 
 
-def piece_character_parameter(piece_name: str) -> str:
+def piece_character(piece_name: str) -> str:
     """Returns the character which represent a piece
 
     Args:
@@ -17,7 +17,7 @@ def piece_character_parameter(piece_name: str) -> str:
     """
     for c in piece_name:
         if c.isupper():
-            return '-%s' % c
+            return '%s' % c
 
 
 def piece_pluralized(piece_name: str) -> str:

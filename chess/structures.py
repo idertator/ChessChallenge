@@ -75,6 +75,16 @@ class AbstractPiece(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
+    def art(cls) -> str:
+        """Unicode graphical representation of the piece
+
+        Returns:
+            Unicode chess art
+        """
+        pass
+
+    @classmethod
+    @abstractmethod
     def positions(cls, board, row: int, col: int):
         """Generator of available attacking slots
 
@@ -140,6 +150,10 @@ class KingPiece(AbstractPiece):
         return 'King'
 
     @classmethod
+    def art(cls):
+        return '♔'
+
+    @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_step(board, row, col, _KING_QUEEN_MOVES)
 
@@ -156,6 +170,10 @@ class QueenPiece(AbstractPiece):
     @classmethod
     def name(cls):
         return 'Queen'
+
+    @classmethod
+    def art(cls):
+        return '♕'
 
     @classmethod
     def positions(cls, board, row: int, col: int):
@@ -176,6 +194,10 @@ class BishopPiece(AbstractPiece):
         return 'Bishop'
 
     @classmethod
+    def art(cls):
+        return '♗'
+
+    @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _BISHOP_MOVES)
 
@@ -194,6 +216,10 @@ class RookPiece(AbstractPiece):
         return 'Rook'
 
     @classmethod
+    def art(cls):
+        return '♖'
+
+    @classmethod
     def positions(cls, board, row: int, col: int):
         yield from AbstractPiece.positions_run(board, row, col, _ROOK_MOVES)
 
@@ -210,6 +236,10 @@ class KnightPiece(AbstractPiece):
     @classmethod
     def name(cls):
         return 'kNight'
+
+    @classmethod
+    def art(cls):
+        return '♘'
 
     @classmethod
     def positions(cls, board, row: int, col: int):

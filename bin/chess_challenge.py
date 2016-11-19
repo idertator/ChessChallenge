@@ -4,7 +4,8 @@ import argparse
 
 from chess.solvers import SOLVERS_LIST, SOLVERS_DICT
 from chess.structures import PIECES_LIST
-from chess.utils import piece_character_parameter, piece_pluralized, capitalize
+from chess.utils import piece_character, piece_pluralized
+from chess.formats import FORMAT_DICT, FORMAT_DEFAULT
 
 
 if __name__ == '__main__':
@@ -38,6 +39,15 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
+        '-of', '--output-format',
+        dest='output_format',
+        type=str, default=FORMAT_DEFAULT,
+        choices=[format_name for format_name in FORMAT_DICT],
+        required=False,
+        help='which format use to represent the solution in the output'
+    )
+
+    parser.add_argument(
         '-V', '--version',
         action='version',
         version='chessChallenge v0.1'
@@ -45,7 +55,7 @@ if __name__ == '__main__':
 
     for piece in PIECES_LIST:
         parser.add_argument(
-            piece_character_parameter(piece.name()), ('--%s' % piece_pluralized(piece.name())),
+            '-%s' % piece_character(piece.name()), ('--%s' % piece_pluralized(piece.name())),
             dest=piece.name(),
             type=int, default=0,
             required=False,
@@ -61,10 +71,13 @@ if __name__ == '__main__':
         rows, cols, pieces
     )
 
+    print_formatted = FORMAT_DICT[args.output_format]
+
     solution_count = 0
     for solution in solver.solutions():
         solution_count += 1
         if not args.count_only:
-            print(solution.state)
+            print_formatted(solution)
 
+    print()
     print('%d solutions found in %.2f seconds' % (solution_count, solver.time))
