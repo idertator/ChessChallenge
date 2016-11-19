@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.2] - 2016-11-19
+
+### Added
+
+- Custom solution output formatters.
+
+### Fixed
+
+- Some missing information in the solvers CLI argument.
+
 ## [0.1.1] - 2016-11-18
 
 ### Added
