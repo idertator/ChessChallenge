@@ -32,7 +32,7 @@ def piece_pluralized(piece_name: str) -> str:
     return '%ss' % piece_name.lower()
 
 
-def capitalize(piece_name: str) -> str:
+def capitalized(piece_name: str) -> str:
     """Returns a capitalized version of a piece name
 
     Args:

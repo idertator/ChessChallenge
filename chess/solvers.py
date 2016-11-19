@@ -13,7 +13,7 @@ from abc import ABCMeta, abstractmethod
 from time import time
 
 from .structures import Board
-from .utils import piece_pluralized, capitalize
+from .utils import piece_pluralized, capitalized
 
 
 _SOLVER_REPR_TEMPLATE = '''Solver     : %s
@@ -61,7 +61,7 @@ class Solver(metaclass=ABCMeta):
         return _SOLVER_REPR_TEMPLATE % (
             self.identifier(),
             self.rows, self.cols,
-            '\n'.join(['\t* %s: %d' % (capitalize(piece_pluralized(piece.name())), count)
+            '\n'.join(['\t* %s: %d' % (capitalized(piece_pluralized(piece.name())), count)
                        for piece, count in self.pieces if count > 0])
         )
 
