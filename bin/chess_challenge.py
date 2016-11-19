@@ -50,7 +50,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '-V', '--version',
         action='version',
-        version='chessChallenge v0.2'
+        version='ChessChallenge v0.2'
     )
 
     for piece in PIECES_LIST:
