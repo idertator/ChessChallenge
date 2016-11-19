@@ -24,6 +24,7 @@ if __name__ == '__main__':
         '-s', '--solver',
         dest='solver',
         type=str, default=SOLVERS_LIST[0].identifier(),
+        choices=[solver.identifier() for solver in SOLVERS_LIST],
         required=False,
         help='which solver use to find solutions'
     )
