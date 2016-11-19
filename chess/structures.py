@@ -366,3 +366,5 @@ class Board:
     def __eq__(self, other):
         return (self.state == other.state).all()
 
+
+__author__ = 'Roberto Antonio Becerra García <idertator@gmail.com>'

@@ -81,3 +81,6 @@ if __name__ == '__main__':
 
     print()
     print('%d solutions found in %.2f seconds' % (solution_count, solver.time))
+
+
+__author__ = 'Roberto Antonio Becerra García <idertator@gmail.com>'

@@ -148,5 +148,6 @@ SOLVERS_LIST = (
 SOLVERS_DICT = {solver.identifier(): solver for solver in SOLVERS_LIST}
 
 
+__author__ = 'Roberto Antonio Becerra García <idertator@gmail.com>'
 
 
