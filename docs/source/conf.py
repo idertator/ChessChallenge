@@ -36,8 +36,8 @@ project = 'ChessChallenge'
 copyright = 'MIT License'
 author = 'Roberto Antonio Becerra García'
 
-version = '0.1'
-release = '0.1.0'
+version = '0.2'
+release = '0.2.0'
 
 # Docs
 language = 'en'
